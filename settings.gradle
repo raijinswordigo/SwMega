@@ -22,5 +22,5 @@ dependencyResolutionManagement {
 	}
 }
 
-rootProject.name = "Needle"
+rootProject.name = "Mega"
 include ':app'

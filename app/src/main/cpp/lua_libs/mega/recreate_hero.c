@@ -6,16 +6,11 @@
 #include "lauxlib.h"
 #include "core/log.h"
 #include "lua.h"
+#include "caver/types.h"
 
 #include <stdbool.h>
 
 #define LOG_TAG "MiniRecreateHero"
-
-typedef struct {
-	float x;
-	float y;
-	float z;
-} Vector3;
 
 STATIC_DL_FUNCTION_SYMBOL(
 	GameSceneController__CreateHeroObjectAt,

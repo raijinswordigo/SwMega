@@ -6,6 +6,7 @@
 
 /* External stuff... */
 #include "libs/luasocket/src/luasocket.h"
+#include "lua_libs/button/button.h"
 #include "lua_libs/lfs/lfs.h"
 
 #define LOG_TAG "MiniEventLuaInit"
@@ -16,17 +17,13 @@ static const luaL_Reg global_libs[] = {
 	{MINI_LIB_NAME,   miniLL_open_mini},
 	{"LNI",           miniLL_open_lni},
 	{"Components",    miniLL_open_components},
+    {"KiwiOverlay",   initLL_open_button},
+	{"CameraController", miniLL_open_camera},
 
 	/* External stuff again. */
 	{"broken_socket", luaopen_socket_core},
 	{"fs",            luaopen_lfs},
 
-	{NULL, NULL}
-};
-
-static const luaL_Reg mini_sub_libs[] = {
-	{"Health",    miniLL_open_health},
-	{"Character", miniLL_open_character},
 	{NULL, NULL}
 };
 
@@ -51,14 +48,6 @@ STATIC_DL_HOOK_SYMBOL(
 	for (; glib->name; glib++) {
 		glib->func(L);
 		lua_setglobal(L, glib->name);
-	}
-
-	/* Mini's sublibraries, inserted in the `Mini` table. */
-	lua_getfield(L, LUA_GLOBALSINDEX, MINI_LIB_NAME);
-	const luaL_Reg *lib = mini_sub_libs;
-	for (; lib->name; lib++) {
-		lib->func(L);
-		lua_setfield(L, -2, lib->name);
 	}
 }
 

@@ -83,20 +83,14 @@ add_library(mini SHARED
         lua_libs/lni/execute.c
         lua_libs/lni/lni.c
 
-        lua_libs/mini/controls.c
-        lua_libs/mini/library.c
-        lua_libs/mini/profile.c
-        lua_libs/mini/arch.c
-        lua_libs/mini/scene_find_all.c
-        lua_libs/mini/debug.c
-        lua_libs/mini/recreate_hero.c
-        lua_libs/mini/the_map_function.c
-
-        lua_libs/mini_health/health.c
-
-        lua_libs/mini_character/mini_character.c
-        lua_libs/mini_character/attributes.c
-        lua_libs/mini_character/exp.c
+        lua_libs/mega/controls.c
+        lua_libs/mega/library.c
+        lua_libs/mega/profile.c
+        lua_libs/mega/arch.c
+        lua_libs/mega/scene_find_all.c
+        lua_libs/mega/debug.c
+        lua_libs/mega/recreate_hero.c
+        lua_libs/mega/the_map_function.c
 
         lua_libs/components/library.c
         lua_libs/components/components.c
@@ -104,6 +98,11 @@ add_library(mini SHARED
         lua_libs/components/physics.c
         lua_libs/components/entity.c
         lua_libs/components/swingable_weapon_controller.c
+
+        lua_libs/button/library.c
+
+        lua_libs/button/button.c
+        lua_libs/camera.c
 
         patches/32patch.c
         patches/assets.c

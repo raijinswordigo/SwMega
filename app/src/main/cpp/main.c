@@ -3,7 +3,7 @@
 #include "config/mini_config.h"
 #include "libs/Gloss.h"
 #include "core/log.h"
-#include "lua_libs/mini/mini.h"
+#include "lua_libs/mega/mini.h"
 
 #include "init/core.h"
 #include "init/features.h"
@@ -12,6 +12,8 @@
 #include "init/events.h"
 #include "core/impl_files/resource_paths.h"
 #include "init/lua_libs.h"
+
+#include "lua_libs/button/button.h"
 
 #include <stdbool.h>
 
@@ -82,9 +84,9 @@ void midLoad() {
 	initLL_debug();
 	initLL_recreate_hero();
 	initLL_map_function();
-	initLL_character();
 
 	initLL_components();
+	initLL_button();
 
 	/* Misc Init stuff that needs to move eventually. */
 	read_mini_config_asset();

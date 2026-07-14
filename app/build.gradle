@@ -91,7 +91,7 @@ android {
 	applicationVariants.configureEach { /* com.android.build.gradle.internal.api.ApplicationVariantImpl */ variant ->
 		variant.outputs.configureEach { output ->
 			if (variant.buildType.name == "release") {
-				def appName = "SwordigoMini"
+				def appName = "SwordigoMega"
 				def versionName = variant.versionName
 				def versionCode = variant.versionCode
 				outputFileName = "${appName}_${versionName}_${versionCode}.apk"
