@@ -14,6 +14,7 @@ static CameraController* get_cc(lua_State *L) {
 	return (CameraController*)cc;
 }
 
+
 static int SetOffset(lua_State *L) {
 	float x = (float)lua_tonumber(L, 1);
 	float y = (float)lua_tonumber(L, 2);
