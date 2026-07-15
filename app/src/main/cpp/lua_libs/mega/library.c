@@ -14,9 +14,11 @@ static const luaL_Reg mini_lib[] = {
 //	{"ExecuteLNI",        lni_execute},
 //	{"BindLNI",           lni_bind},
 
-//	{"SceneFindAll",      scene_find_all},
+	{"FindAll",      miniLL_scene_find_all},
 
-//	{"ToggleDebug",       miniLL_toggle_debug},
+	{"SetModel", miniLL_set_model},
+
+	{"ToggleDebug",       miniLL_toggle_debug},
 
 	{"SetCoinLimit",      miniCL_set_from_lua},
 
@@ -32,4 +34,13 @@ LUALIB_API int miniLL_open_mini(lua_State *L) {
 	luaL_register(L, NULL, mini_lib);
 
 	return 1;
+}
+
+void initLL_mini() {
+	initLL_set_controls_hidden();
+	initLL_debug();
+	initLL_recreate_hero();
+	initLL_map_function();
+	initLL_scene_find_all();
+	initLL_set_model();
 }

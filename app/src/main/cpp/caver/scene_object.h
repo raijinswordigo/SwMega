@@ -22,8 +22,8 @@ typedef struct SceneObject {
 	void *program; // boost::shared_ptr<Program>.px
 	void *program_refcount; // boost::shared_ptr<Program>.pn
 	Vector2 velocity;
-	Vector2 position;
-	char _pad_unk[0x8];
+	Vector3 position;
+	char _pad_unk[0x4];
 	float rotation;
 	float angular_velocity;
 	float instance_scale;

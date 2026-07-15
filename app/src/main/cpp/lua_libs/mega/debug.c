@@ -14,30 +14,10 @@ STATIC_DL_FUNCTION_SYMBOL(
 )
 
 int miniLL_toggle_debug(lua_State *L) {
-	lua_getglobal(L, "gameController");
-
-	const void *gameController = lua_topointer(L, -1);
-	LOGD("Found GameViewController: %p", gameController);
-
-	// Offset found from GameViewController::LevelUpViewControllerDidFinish:
-	// ExperienceBar::UpdateExperience(this->sceneView->overlayView->expBar);
-	//                                 ^     ^          ^
-	//                                  \-GameViewController
-	//                                        \-GameSceneView
-	//                                                   \-GameOverlayView
-
-	void *gameSceneView = *$(void*, gameController, 0x70, 0xd8);
-	LOGD("GameSceneView: %p", gameSceneView);
-
-	toggle_debug_info(gameSceneView);
-
-	void *debug_overlay = *$(void*, gameSceneView, 0xd4, 0x110);
-
-	*$(int, debug_overlay, 0x10c, 0x164) = 1;
-
-	LOGD("Enabled debug overlay maybe. %p", debug_overlay);
-
-
+	bool toggleDebug = (bool)lua_toboolean(L, 1);
+	lua_getglobal(L, "scene");
+	const void *scene = lua_topointer(L, -1);
+	*$(bool, scene, 0x208, 0x358) = toggleDebug;
 	return 0;
 }
 
@@ -70,9 +50,5 @@ STATIC_DL_FUNCTION_SYMBOL(
 
 
 void initLL_debug() {
-	dlsym_toggle_debug_info();
-
-	hook_overlay_toggle();
-//	hook_overlay_update();
-	dlsym_overlay_update();
+	LOGD("nah im debug");
 }

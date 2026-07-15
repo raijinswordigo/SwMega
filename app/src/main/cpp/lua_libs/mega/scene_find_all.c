@@ -1,15 +1,13 @@
-/* clang-format off */
 #include "mini.h" /* clang-format on */
 
 #include "core/hooks.h"
-//#include "iterate.h"
 #include "lauxlib.h"
 #include "core/log.h"
 #include "lua.h"
+#include "caver/scene_object.h"
+#include "core/cpp_strings.h"
 
 #define LOG_TAG "MiniLuaFindAll"
-
-STATIC_DL_FUNCTION_OFFSET(mapIterHelper, 0x54c640, void*, (void* arg))
 
 STATIC_DL_FUNCTION_SYMBOL(
 	pushSceneObject,
@@ -23,107 +21,66 @@ STATIC_DL_FUNCTION_SYMBOL(
 	void*, (lua_State * L)
 )
 
-int miniLL_scene_find_all(lua_State *L) {
-	// Get the scene on the top of the stack.
-	lua_getglobal(L, "scene");
-	if (!lua_islightuserdata(L, -1)) {
-		LOGE("Could not find scene!");
-		luaL_error(L, "Could not find scene pointer!");
-		return 1;
+// From Ghidra...
+static void* rbTreeIncrement(void* param_1) {
+	void* lVar1;
+	void* lVar2 = *(void**)((char*)param_1 + archSplit(0xc, 0x18));
+
+	if (lVar2 != NULL) {
+		do {
+			lVar1 = lVar2;
+			lVar2 = *(void**)((char*)lVar1 + archSplit(0x8, 0x10));
+		} while (lVar2 != NULL);
+		return lVar1;
 	}
 
-	const void *scene = lua_touserdata(L, -1);
-	LOGD("Found Scene: %p", scene);
+	lVar2 = *(void**)((char*)param_1 + archSplit(0x4, 0x8));
+	if (param_1 == *(void**)((char*)lVar2 + archSplit(0xc, 0x18))) {
+		do {
+			lVar1 = lVar2;
+			lVar2 = *(void**)((char*)lVar1 + archSplit(0x4, 0x8));
+		} while (*(void**)((char*)lVar2 + archSplit(0xc, 0x18)) == lVar1);
 
-	void *objTreeMaybe = *$(void*, scene, 0, 0xb0);
+		if (lVar2 == *(void**)((char*)lVar1 + archSplit(0xc, 0x18))) lVar2 = lVar1;
+		return lVar2;
+	}
 
-	LOGD("Iterating the tree...");
-	//
-//	iterate_map(&objTreeMaybe);
+	return lVar2;
+}
 
+int miniLL_scene_find_all(lua_State* L) {
+	lua_getglobal(L, "scene");
+	void* scene = lua_touserdata(L, -1);
+	lua_pop(L, 1);
 
+	if (!scene) return 0;
 
-//	// Not 100% sure...
-//	void *objTree = $(void*, scene, 0, 0xb8);
-//
-//	void *progState = progStateFromL(L);
-//
-//	LOGD("Fetched iter helper: %p", mapIterHelper);
-//	LOGD("Ok, first fetching the data I need from scene... %p", objTree);
-//
-//	// Create the Output table we will be all the SceneObjects in.
-//	lua_newtable(L); // -0, +1
-//
-//	int i = 0;
-//	for (
-//		void *so = $(long*, scene, 0, 0xc8);
-//		so != &$(void*, scene, 0, 0xb8);
-//		so = mapIterHelper(so)
-//		) {
-//
-////		void *so10 = *(void **) (so + 10);
-//
-//		i++;    // Lua starts at 1... wow.
-//		LOGD("num: %d, SceneObject pointer: %p", i, so);
-//
-//		if (&$(void*, scene, 0, 0xb8) == so) {
-//			LOGD("Skipping because AnotherTree?");
-//			continue;
-//		}
-//
-//		void *obj_some_pointer = $(void*, so, 0, 0x22);
-//
-//		// I have no idea what I'm doing :-)
-//		void *objInner = *(&obj_some_pointer + 6);
-//
-//		if (objInner == NULL) {
-//			LOGD("Something I don't understand is null");
-//			continue;
-//		}
-//
-//		LOGD("More stuff, %p %p", obj_some_pointer, objInner);
-//		LOGD("This _should_ be the usage count of the object: %li", $(long, objInner, 0, 0x8));
-//
-//		pushSceneObject(progState, objInner);
-//
-//		void **luaObj = lua_touserdata(L, -1);
-//
-//		LOGD("UD = %p, *UD = %p", luaObj, *luaObj);
-//
-//		// I think it's on the top of the stack???
-//		// I hate side effects...
-//
-//		lua_rawseti(L, -2, i);
-//
-//
-//
-//
-//
-////		// Create the Lua representation of SceneObject.
-////		// TODO: Figure out if this needs to be 0x4 on 32-bit
-////		// Real type: SceneObject**
-////		void **object = lua_newuserdata(L, sizeof(void *)); // -0, +1
-////		// Grab the metatable from the registry.
-////		lua_getfield(L, LUA_REGISTRYINDEX, "SceneObject"); // -0, +1
-////		// Set it on the SceneObject UD
-////		lua_setmetatable(L, -2); // -1, +0
-////		// Place the fetched Instance into the UserData.
-////		*object = so;
-//
-//		// Stack at this point: UD is on the top, Output Table is below it.
-//
-////		lua_rawseti(L, -2, i); // -1, +0
-//
-//		// Output table should be on top of the stack again.
-//	}
-//
-//	// Still on top of stack, return it.
-//	return 1;
-	return 0;
+	lua_newtable(L);
+	void* sentinel = (char*)scene + archSplit(0x70, 0xb8);
+	void* node = *(void**)((char*)sentinel + archSplit(0x8, 0x10));
+
+	int i = 1;
+	void* ps = progStateFromL(L);
+
+	while (node != sentinel)
+	{
+		SceneObject* obj = *(SceneObject**)((char*)node + archSplit(0x14, 0x28));
+
+		if (obj) {
+			CppString* obj_id = *(CppString**)((char*)obj + archSplit(0x2c, 0x50));
+			if (obj_id) LOGD("ID: '%s'", obj_id);
+			lua_pushinteger(L, i++);
+			pushSceneObject(ps, obj);
+			lua_settable(L, -3);
+		}
+
+		node = rbTreeIncrement(node);
+	}
+
+	return 1;
 }
 
 void initLL_scene_find_all() {
-	dlsym_mapIterHelper();
 	dlsym_pushSceneObject();
 	dlsym_progStateFromL();
 }

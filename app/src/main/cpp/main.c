@@ -80,13 +80,11 @@ void midLoad() {
 	initEV_profile();
 
 	/* Lua Libraries */
-	initLL_set_controls_hidden();
-	initLL_debug();
-	initLL_recreate_hero();
-	initLL_map_function();
+	initLL_mini();
 
 	initLL_components();
 	initLL_button();
+	initLL_camera();
 
 	/* Misc Init stuff that needs to move eventually. */
 	read_mini_config_asset();

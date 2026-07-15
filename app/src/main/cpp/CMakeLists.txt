@@ -90,6 +90,7 @@ add_library(mini SHARED
         lua_libs/mega/scene_find_all.c
         lua_libs/mega/debug.c
         lua_libs/mega/recreate_hero.c
+        lua_libs/mega/setmodel.c
         lua_libs/mega/the_map_function.c
 
         lua_libs/components/library.c
@@ -99,9 +100,13 @@ add_library(mini SHARED
         lua_libs/components/entity.c
         lua_libs/components/swingable_weapon_controller.c
 
-        lua_libs/button/library.c
-
         lua_libs/button/button.c
+        lua_libs/button/hooks.c
+        lua_libs/button/drawer.c
+        lua_libs/button/seekbar.c
+        lua_libs/button/textinput.c
+        lua_libs/button/overlay.c
+
         lua_libs/camera.c
 
         patches/32patch.c
