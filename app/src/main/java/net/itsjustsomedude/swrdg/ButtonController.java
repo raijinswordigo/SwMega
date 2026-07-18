@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -1703,6 +1704,28 @@ public class ButtonController {
 		});
 	}
 
+	private static void hideKeyboard(View v) {
+		Context ctx = v.getContext();
+		InputMethodManager imm =
+				(InputMethodManager) ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+		if (imm != null) {
+			imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+		}
+	}
+
+	public static void dismissTextInput(String id) {
+		MainActivity ctx = mainActivityRef.get();
+		if (ctx == null) return;
+
+		ctx.runOnUiThread(() -> {
+			TextInputData data = textInputs.get(id);
+			if (data == null) return;
+
+			data.editText.clearFocus();
+			hideKeyboard(data.editText);
+		});
+	}
+
 	public static void overlayAddTextInput(String overlayId, String inputId) {
 		MainActivity ctx = mainActivityRef.get();
 		if (ctx == null) return;
@@ -1881,7 +1904,7 @@ public class ButtonController {
 		if (data == null) return new int[]{0, 0};
 
 		return new int[]{
-			data.editText.getSelectionStart(), data.editText.getSelectionEnd()
+				data.editText.getSelectionStart(), data.editText.getSelectionEnd()
 		};
 	}
 }

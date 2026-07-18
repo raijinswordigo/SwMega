@@ -214,6 +214,26 @@ static int ti_setHidden(lua_State *L) {
 	return 1;
 }
 
+static int ti_dismiss(lua_State *L) {
+	MiniTextInput *ti = CHECK_TEXTINPUT(L);
+
+	GET_ENV();
+	GET_CLS();
+
+	jmethodID m = VOID_METHOD(
+			"dismissTextInput",
+			"(Ljava/lang/String;)V");
+
+	jstring jid = JID_TEXTINPUT(env, ti);
+
+	(*env)->CallStaticVoidMethod(env, cls, m, jid);
+
+	(*env)->DeleteLocalRef(env, jid);
+
+	lua_settop(L, 1);
+	return 1;
+}
+
 static int ti_setBackgroundResource(lua_State *L) {
 	MiniTextInput *ti = CHECK_TEXTINPUT(L);
 	const char *res = luaL_checkstring(L, 2);
@@ -419,6 +439,7 @@ static const luaL_Reg textinput_methods[] = {
 	{"setSelection", ti_setSelection},
 	{"getSelection", ti_getSelection},
 	{"setAlwaysActive", ti_setAlwaysActive},
+	{"dismiss", ti_dismiss},
 	{NULL, NULL}
 };
 

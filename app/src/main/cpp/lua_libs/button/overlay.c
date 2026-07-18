@@ -108,6 +108,30 @@ static int ov_addDrawer(lua_State *L) {
 	return 1;
 }
 
+static int ov_addTextInput(lua_State *L) {
+	MiniOverlay *ov = CHECK_OVERLAY(L);
+	MiniTextInput *ti = (MiniTextInput *)luaL_checkudata(L, 2, TEXTINPUT_MT);
+
+	GET_ENV();
+	GET_CLS();
+
+	jmethodID m = VOID_METHOD(
+		"overlayAddTextInput",
+		"(Ljava/lang/String;Ljava/lang/String;)V"
+	);
+
+	jstring jovid = JID(env, ov);
+	jstring jtid = (*env)->NewStringUTF(env, ti->id);
+
+	(*env)->CallStaticVoidMethod(env, cls, m, jovid, jtid);
+
+	(*env)->DeleteLocalRef(env, jovid);
+	(*env)->DeleteLocalRef(env, jtid);
+
+	lua_settop(L, 1);
+	return 1;
+}
+
 static int ov_makeMovable(lua_State *L) {
 	MiniOverlay *ov = CHECK_OVERLAY(L);
 	jboolean movable = lua_toboolean(L, 2);
@@ -284,6 +308,7 @@ static const luaL_Reg overlay_methods[] = {
 	{"addButton", ov_addButton},
 	{"addDrawer", ov_addDrawer},
 	{"addSeekBar", ov_addSeekBar},
+	{"addTextInput", ov_addTextInput},
 	{"separator", ov_separator},
 	{"setHidden", ov_setHidden},
 	{"setPosition", ov_setPosition},
