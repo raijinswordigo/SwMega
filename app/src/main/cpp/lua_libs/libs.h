@@ -11,5 +11,6 @@ int miniLL_open_mini(lua_State *L);
 int miniLL_open_lni(lua_State *L);
 int miniLL_open_components(lua_State *L);
 int miniLL_open_camera(lua_State *L);
+LUALIB_API int miniLL_open_game_controller(lua_State *L);
 
 #endif /* NEEDLE_LUA_LIBS_H */

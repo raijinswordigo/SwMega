@@ -11,6 +11,7 @@
 #define LOG_TAG "MiniEventProfile"
 
 char *g_profile_id;
+void *g_profile;
 
 void miniEV_profile_changed(const char *id) {
 	LOGD("Fetched new Profile ID: %s", g_profile_id);
@@ -40,6 +41,17 @@ STATIC_DL_HOOK_SYMBOL(
 	return orig_loadProfileId(this, p1, profile);
 }
 
+STATIC_DL_HOOK_SYMBOL(
+    LoadProfile,
+    "_ZN5Caver13PlayerProfile4LoadEv",
+    void, (void *profile)
+) {
+    orig_LoadProfile(profile);
+	LOGD("Profile loadin bruh");
+    g_profile = profile;
+}
+
 void initEV_profile(void) {
 	hook_loadProfileId();
+	hook_LoadProfile();
 }

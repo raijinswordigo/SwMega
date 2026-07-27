@@ -1,19 +1,19 @@
 #include "init/main.h"
 
+#include "caver/camera.h"
 #include "config/mini_config.h"
-#include "libs/Gloss.h"
+#include "core/impl_files/resource_paths.h"
 #include "core/log.h"
-#include "lua_libs/mega/mini.h"
-
+#include "events/scene.h"
 #include "init/core.h"
-#include "init/features.h"
-#include "init/patches.h"
 #include "init/engine.h"
 #include "init/events.h"
-#include "core/impl_files/resource_paths.h"
+#include "init/features.h"
 #include "init/lua_libs.h"
-
+#include "init/patches.h"
+#include "libs/Gloss.h"
 #include "lua_libs/button/button.h"
+#include "lua_libs/mega/mini.h"
 
 #include <stdbool.h>
 
@@ -78,6 +78,7 @@ void midLoad() {
 
 	/* Events */
 	initEV_profile();
+	initEV_scene();
 
 	/* Lua Libraries */
 	initLL_mini();
@@ -85,6 +86,7 @@ void midLoad() {
 	initLL_components();
 	initLL_button();
 	initLL_camera();
+	initLL_game_controller();
 
 	/* Misc Init stuff that needs to move eventually. */
 	read_mini_config_asset();

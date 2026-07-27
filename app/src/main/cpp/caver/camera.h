@@ -3,6 +3,7 @@
 
 #include "core/hooks.h"
 #include "types.h"
+#include "lua.h"
 
 typedef struct CameraController {
 	int mode;
@@ -27,5 +28,7 @@ typedef struct CameraController {
 	float shakeDuration;
 
 } CameraController;
+
+CameraController* get_cc(lua_State *L);
 
 #endif

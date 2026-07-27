@@ -13,6 +13,7 @@ int miniLL_get_arch(lua_State *L);
 int miniLL_the_map_function(lua_State *L);
 int miniLL_scene_find_all(lua_State *L);
 int miniLL_set_model(lua_State *L);
+int miniLL_test(lua_State *L);
 
 void initLL_mini();
 
@@ -22,5 +23,6 @@ void initLL_recreate_hero();
 void initLL_scene_find_all();
 void initLL_map_function();
 void initLL_set_model();
+void initLL_test();
 
 #endif //SWMINI_MINI_LUA_LIBRARY_H

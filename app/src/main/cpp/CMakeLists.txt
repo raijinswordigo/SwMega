@@ -61,10 +61,13 @@ add_library(mini SHARED
         caver/components.c
         caver/program_state.c
 
+        caver/scene_object.c
+
         config/config.c
         config/mini_config.c
 
         events/profile.c
+        events/scene.c
 
         utils/byte_sequence.c
         utils/files.c
@@ -91,6 +94,7 @@ add_library(mini SHARED
         lua_libs/mega/debug.c
         lua_libs/mega/recreate_hero.c
         lua_libs/mega/setmodel.c
+        lua_libs/mega/test.c
         lua_libs/mega/the_map_function.c
 
         lua_libs/components/library.c
@@ -108,6 +112,7 @@ add_library(mini SHARED
         lua_libs/button/overlay.c
 
         lua_libs/camera.c
+        lua_libs/game_controller.c
 
         patches/32patch.c
         patches/assets.c

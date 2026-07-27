@@ -9,10 +9,9 @@
 
 static bool g_disable_optimizations = false;
 
-static CameraController* get_cc(lua_State *L) {
+CameraController* get_cc(lua_State *L) {
 	lua_getglobal(L, "cameraController");
 	const void *cc = lua_topointer(L, -1);
-	LOGD("Camera: %p", cc);
 	lua_pop(L, 1);
 	return (CameraController*)cc;
 }

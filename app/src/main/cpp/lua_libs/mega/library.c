@@ -17,6 +17,7 @@ static const luaL_Reg mini_lib[] = {
 	{"FindAll",      miniLL_scene_find_all},
 
 	{"SetModel", miniLL_set_model},
+	{"Test", miniLL_test},
 
 	{"ToggleDebug",       miniLL_toggle_debug},
 
@@ -43,4 +44,5 @@ void initLL_mini() {
 	initLL_map_function();
 	initLL_scene_find_all();
 	initLL_set_model();
+	initLL_test();
 }

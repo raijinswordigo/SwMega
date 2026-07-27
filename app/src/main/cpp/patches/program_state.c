@@ -19,6 +19,7 @@ static const luaL_Reg global_libs[] = {
 	{"Components",    miniLL_open_components},
     {"OverlayController",   miniLL_open_button},
 	{"CameraController", miniLL_open_camera},
+	{"GameController", miniLL_open_game_controller},
 
 	/* External stuff again. */
 	{"broken_socket", luaopen_socket_core},
