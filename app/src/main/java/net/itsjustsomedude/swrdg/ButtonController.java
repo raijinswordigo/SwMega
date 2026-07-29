@@ -73,6 +73,9 @@ public class ButtonController {
 		public String overlayId;
 		public boolean confined;
 
+		public boolean explicitTextSizeSp = false;
+		public float textSizeSpValue = -1f;
+
 		float nw;
 		float nh;
 		float nx;
@@ -425,17 +428,16 @@ public class ButtonController {
 			ViewGroup oldParent = (ViewGroup) btn.button.getParent();
 			if (oldParent != null) oldParent.removeView(btn.button);
 
-			int overlayWidthPx  = (int)(rootWidth()  * overlay.nw);
-			int overlayHeightPx = (int)(rootHeight() * overlay.nh);
-			int widthPx  = (int)(overlayWidthPx  * btn.nw);
-			int heightPx = (int)(overlayHeightPx * btn.nh);
+			int overlayWidthPx = (int) (rootWidth() * overlay.nw);
+			int overlayHeightPx = (int) (rootHeight() * overlay.nh);
+			int widthPx = (int) (overlayWidthPx * btn.nw);
+			int heightPx = (int) (overlayHeightPx * btn.nh);
 
 			FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(widthPx, heightPx);
-			lp.leftMargin = (int)(overlayWidthPx  * btn.nx) - widthPx  / 2;
-			lp.topMargin = (int)(overlayHeightPx * btn.ny) - heightPx / 2;
+			lp.leftMargin = (int) (overlayWidthPx * btn.nx) - widthPx / 2;
+			lp.topMargin = (int) (overlayHeightPx * btn.ny) - heightPx / 2;
 
-			btn.baseTextSize = heightPx * 0.35f;
-			btn.button.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, btn.baseTextSize);
+			applyTextSize(btn, heightPx);
 
 			btn.overlayId = overlayId;
 			overlay.frame.addView(btn.button, lp);
@@ -833,15 +835,10 @@ public class ButtonController {
 			int heightPx = (int)(base * h);
 
 			FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(widthPx, heightPx);
-			lp.leftMargin = (int)(rw * nx) - (widthPx / 2);
-			lp.topMargin = (int)(rh * ny) - (heightPx / 2);
+			lp.leftMargin = (int) (rw * nx) - (widthPx / 2);
+			lp.topMargin = (int) (rh * ny) - (heightPx / 2);
 
-			data.baseTextSize = heightPx * 0.35f;
-
-			btn.setTextSize(
-					android.util.TypedValue.COMPLEX_UNIT_PX,
-					data.baseTextSize
-			);
+			applyTextSize(data, heightPx);
 
 			ViewGroup root = viewRef.get();
 
@@ -1034,7 +1031,7 @@ public class ButtonController {
 			lp.height = heightPx;
 			btn.setLayoutParams(lp);
 
-			data.baseTextSize = heightPx * 0.35f;
+			applyTextSize(data, heightPx);
 			btn.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, data.baseTextSize);
 		});
 	}
@@ -1238,7 +1235,7 @@ public class ButtonController {
 		ctx.runOnUiThread(() -> {
 			ButtonData data = buttons.get(id);
 			if (data == null) return;
-			data.button.getBackground().setAlpha(alpha);
+			data.button.setAlpha(Math.max(0f, Math.min(1f, alpha / 255f)));
 		});
 	}
 
@@ -1315,13 +1312,7 @@ public class ButtonController {
 
 			btn.setLayoutParams(lp);
 
-			// This should work...
-			data.baseTextSize = heightPx * 0.35f;
-
-			btn.setTextSize(
-					android.util.TypedValue.COMPLEX_UNIT_PX,
-					data.baseTextSize
-			);
+			applyTextSize(data, heightPx);
 		});
 	}
 
@@ -1349,8 +1340,19 @@ public class ButtonController {
 		ctx.runOnUiThread(() -> {
 			ButtonData data = buttons.get(id);
 			if (data == null) return;
+			data.explicitTextSizeSp = true;
+			data.textSizeSpValue = sp;
 			data.button.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, sp);
 		});
+	}
+
+	private static void applyTextSize(ButtonData data, int heightPx) {
+		data.baseTextSize = heightPx * 0.35f;
+		if (data.explicitTextSizeSp) {
+			data.button.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, data.textSizeSpValue);
+		} else {
+			data.button.setTextSize(android.util.TypedValue.COMPLEX_UNIT_PX, data.baseTextSize);
+		}
 	}
 
 	public static void setTextScale(String id, float scale) {
@@ -1362,6 +1364,7 @@ public class ButtonController {
 		ctx.runOnUiThread(() -> {
 			ButtonData data = buttons.get(id);
 			if (data == null) return;
+			data.explicitTextSizeSp = false;
 			data.button.setTextSize(
 					android.util.TypedValue.COMPLEX_UNIT_PX,
 					data.baseTextSize * scale
